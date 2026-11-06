@@ -116,3 +116,18 @@ This version **does not record or understand voice messages** and does not autom
 A fictional test chat is available through the **Open demo chat** button in **Safety preview → Screen Protection**. It opens a separate Electron window. You can also open http://127.0.0.1:5173/demo.html in a regular browser while Vite is running.
 
 Scenarios: reward scam, grooming warning signs, cyberbullying and harmless school conversation. In the dashboard, refresh the screen source list, select **HeyBuddy Fictional Chat Lab**, then click **Start screen protection**. Wait for a complete local model assessment and switch scenarios to compare outputs. You must start screen capture explicitly. Nothing records in the background when sharing is off.
+
+## Screen protection capture troubleshooting
+
+If **Start screen protection** is greyed out: first click **Open demo chat**, then
+**Refresh windows**, choose **HeyBuddy Fictional Chat Lab**, and allow the source
+approval to complete. The status will say *Window approved*. Then click Start.
+
+If capture is denied, HeyBuddy now displays an explicit error and asks you to
+re-select the source. Only the desktop application can use the Electron custom
+source picker. In a standalone web browser use its native screen-sharing picker.
+The Electron main process logs capture denials in the terminal. Only the
+explicitly selected screen/window is eligible; audio capture remains disabled.
+
+This change updates code, but successful Windows screen-capture operation still
+requires a real local test.

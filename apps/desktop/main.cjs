@@ -136,21 +136,56 @@ app.whenReady().then(() => {
     approvedSource = sourceId;
     return true;
   });
+  // Screen sharing is permitted only for the main dashboard, after explicit
+  // source selection and a direct click on Start screen protection.
+  // Some Electron/Chromium builds ask for display-capture permission before
+  // calling the stream handler. Never grant camera or microphone access.
+  const canCapture = (wc) => Boolean(
+    dashboard && !dashboard.isDestroyed() &&
+    wc === dashboard.webContents && approvedSource
+  );
+  session.defaultSession.setPermissionCheckHandler((wc, permission) => {
+    return permission === 'display-capture' && canCapture(wc);
+  });
+  session.defaultSession.setPermissionRequestHandler((wc, permission, callback) => {
+    callback(permission === 'display-capture' && canCapture(wc));
+  });
+
   session.defaultSession.setDisplayMediaRequestHandler(async (request, callback) => {
-    if (!dashboard || dashboard.isDestroyed() || !approvedSource ||
-        request.securityOrigin !== 'http://127.0.0.1:5173' ||
-        !request.userGesture || !request.videoRequested) {
+    const isDashboardFrame = Boolean(
+      dashboard && !dashboard.isDestroyed() &&
+      request.frame && request.frame === dashboard.webContents.mainFrame
+    );
+
+    // Chromium may provide a trailing slash in securityOrigin. Normalise it
+    // before checking; a literal string comparison can incorrectly deny capture.
+    let originIsAllowed = false;
+    try {
+      originIsAllowed = new URL(request.securityOrigin).origin === new URL(DEV_URL).origin;
+    } catch {
+      originIsAllowed = false;
+    }
+
+    if (!isDashboardFrame || !originIsAllowed || !approvedSource ||
+        request.userGesture !== true || request.videoRequested !== true ||
+        request.audioRequested === true) {
+      console.warn('[HeyBuddy] Capture request declined. Source selected:', Boolean(approvedSource),
+        'dashboard frame:', isDashboardFrame, 'origin valid:', originIsAllowed,
+        'user initiated:', request.userGesture === true);
       callback(null);
       return;
     }
-    // Consume approval exactly once; each new session requires choosing again.
+
+    // Each new sharing session needs an explicitly approved source.
     const id = approvedSource;
     approvedSource = null;
     try {
       const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
       const selected = sources.find(item => item.id === id);
+      if (!selected) console.warn('[HeyBuddy] Capture source no longer exists:', id);
       callback(selected ? { video: selected } : null);
-    } catch {
+    } catch (error) {
+      console.error('[HeyBuddy] Could not grant display sharing:', error.message);
       callback(null);
     }
   });

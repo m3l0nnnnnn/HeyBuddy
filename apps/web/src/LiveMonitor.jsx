@@ -142,6 +142,7 @@ export default function LiveMonitor() {
       }
       // A real user click initiates all screen captures.
       // In browsers, the native picker asks which source to share.
+      setStatus('requesting');
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: { frameRate: 1 },
         audio: false,
@@ -162,9 +163,12 @@ export default function LiveMonitor() {
       timerRef.current = setInterval(scanFrame, INTERVAL_MS);
     } catch (e) {
       stop();
-      if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') {
+      if (e.name === 'NotAllowedError' || e.name === 'AbortError') {
+        setError('Screen capture was blocked or cancelled. Re-select the demo window, then click Start screen protection again. Ensure you are using the Electron desktop app.');
+      } else {
         setError('Screen capture failed: ' + messageOf(e));
       }
+      setSourceReady(false);
     }
   }
 
@@ -191,12 +195,13 @@ export default function LiveMonitor() {
             </select>
             <button onClick={refresh} disabled={active} aria-label="Refresh windows"><RefreshCw size={18}/></button>
           </div>
+          {!active && <p className="monitor-source-tip">{sourceReady ? 'Window approved — click Start screen protection.' : 'Start remains disabled until you select and approve a window above.'}</p>}
         </div>
       )}
       <div className="monitor-actions">
         {!active ? <button className="monitor-start" onClick={start} disabled={isElectron && !sourceReady}><Eye size={18}/> Start screen protection</button> :
           <button className="monitor-stop" onClick={stop}><Square size={16}/> Stop sharing</button>}
-        <span>{status === 'analysing' ? 'Buddy is checking…' : active ? 'Monitoring visible content only' : 'Screen access is off'}</span>
+        <span>{status === 'requesting' ? 'Requesting screen access…' : status === 'analysing' ? 'Buddy is checking…' : active ? 'Monitoring visible content only' : isElectron && !sourceReady ? 'Choose a window above to enable Start' : 'Screen access is off'}</span>
       </div>
       <div className="monitor-model">{model?.connected ? <CheckCircle2 size={15} /> : <EyeOff size={15}/>}
         {model ? (model.connected ? (model.model_installed ? 'Ollama ready · ' + model.model : 'Download ' + model.model + ' before analysis') : 'Ollama is offline or backend unavailable') : 'Checking local Ollama connection…'}
