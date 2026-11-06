@@ -69,3 +69,9 @@ The frontend's status indicator checks the local FastAPI health endpoint. If the
 - Provide supportive guidance and escalation paths; do not claim the AI replaces professional help, platform reporting or emergency services.
 
 The repository is currently **public**. Never commit credentials, real private conversations, screenshots or personal data.
+
+## Step 2b — Floating Buddy
+
+Run `npm install` followed by `npm run dev` from the repository root on Windows. Electron starts the main dashboard and a separate **draggable, always-on-top Buddy avatar** near the bottom-right of your primary display. Drag **Move Buddy** to reposition it. Click Buddy to reopen the dashboard. Click × to hide Buddy; from the desktop app choose **My buddy → Show floating Buddy** to show it again.
+
+This runs in development mode. It does **not** install a Windows desktop shortcut. Screen monitoring, microphone access, voice activation and Ollama are not yet available.
