@@ -52,16 +52,8 @@ const features = [
 
 function Buddy({ mood = 'happy', size = 'large' }) {
   return (
-    <div className={'buddy buddy--' + size + ' buddy--' + mood} role="img" aria-label="Original purple HeyBuddy mascot">
-      <div className="buddy__antenna"><span /></div>
-      <div className="buddy__body">
-        <div className="buddy__cheek buddy__cheek--left" />
-        <div className="buddy__cheek buddy__cheek--right" />
-        <div className="buddy__eye buddy__eye--left" />
-        <div className="buddy__eye buddy__eye--right" />
-        <div className="buddy__mouth" />
-      </div>
-      <div className="buddy__shadow" />
+    <div className={'buddy-art buddy-art--' + size} role="img" aria-label="Original HeyBuddy cartoon mouse mascot">
+      <img src="./buddy-mouse.svg" alt="" draggable="false" />
     </div>
   );
 }
@@ -177,7 +169,7 @@ function App() {
 
         {page === 'buddy' && (
           <section className="page-panel">
-            <div className="page-heading"><p className="eyebrow"><Heart size={15} /> YOUR PERSONAL COMPANION</p><h1>Meet Buddy</h1><p>A friendly, original character who will help explain online risks without judgment.</p></div>
+            <div className="page-heading"><p className="eyebrow"><Heart size={15} /> YOUR PERSONAL COMPANION</p><h1>Meet Buddy</h1><p>A cheerful mouse companion who will help explain online risks without judgment.</p></div>
             <div className="buddy-feature"><div className="buddy-feature__figure"><Buddy /></div><div><span className="tiny-pill">ORIGINAL CHARACTER · FIRST DRAFT</span><h2>Hi, I'm Buddy!</h2><p>I'm here to make online safety easier to understand. Eventually you'll be able to talk to me, ask questions, and customise how I look and sound.</p><div className="feature-tags"><span>Friendly</span><span>Privacy-first</span><span>No judgment</span></div><p className="muted-small">Floating Buddy is now available in the Electron desktop app. Screen monitoring and voice activation are not yet implemented.</p><button className="primary-button" onClick={() => window.heybuddy?.showBuddy ? window.heybuddy.showBuddy() : window.alert('Start the desktop app using npm run dev to display your floating Buddy.')}>Show floating Buddy <ArrowRight size={17} /></button></div></div>
           </section>
         )}

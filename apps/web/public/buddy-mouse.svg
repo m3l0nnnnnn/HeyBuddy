@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" role="img" aria-label="HeyBuddy mouse mascot">
+  <defs>
+    <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f68b88"/>
+      <stop offset="1" stop-color="#da566d"/>
+    </linearGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#fff1d9"/>
+      <stop offset="1" stop-color="#e6bfa5"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="100" cy="207" rx="64" ry="8" fill="#4c3b73" opacity=".16"/>
+  <path d="M72 159 Q65 196 72 204 L89 204 93 179" fill="#44445e"/>
+  <path d="M109 179 113 204 130 204 Q137 192 127 157" fill="#44445e"/>
+  <ellipse cx="77" cy="205" rx="24" ry="9" fill="#f5b85c" stroke="#dd9d4d" stroke-width="2"/>
+  <ellipse cx="125" cy="205" rx="24" ry="9" fill="#f5b85c" stroke="#dd9d4d" stroke-width="2"/>
+  <path d="M53 158 Q38 155 34 177 Q33 193 47 192 L65 183" fill="#27283a" stroke="#27283a" stroke-width="7" stroke-linecap="round"/>
+  <path d="M147 158 Q162 155 166 177 Q167 193 153 192 L136 183" fill="#27283a" stroke="#27283a" stroke-width="7" stroke-linecap="round"/>
+  <path d="M64 149 Q99 125 136 149 L146 188 Q124 202 100 198 Q74 201 54 188 Z" fill="url(#jacket)" stroke="#d95f72" stroke-width="2"/>
+  <path d="M88 150 L101 160 113 149" fill="none" stroke="#fff4e8" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="100" cy="180" r="12" fill="#fff2d3" opacity=".95"/>
+  <path d="M100 172 L102.3 177.2 108 177.8 103.8 181.8 105 187.3 100 184.6 95 187.3 96.2 181.8 92 177.8 97.7 177.2 Z" fill="#f5aa51"/>
+  <circle cx="45" cy="53" r="34" fill="#28263a"/>
+  <circle cx="155" cy="53" r="34" fill="#28263a"/>
+  <circle cx="45" cy="53" r="23" fill="#403348"/>
+  <circle cx="155" cy="53" r="23" fill="#403348"/>
+  <ellipse cx="100" cy="89" rx="67" ry="66" fill="#29283c"/>
+  <path d="M59 90 Q54 48 77 44 Q99 37 100 61 Q104 39 126 45 Q148 54 141 92 Q162 117 137 140 Q101 162 62 138 Q37 118 59 90 Z" fill="url(#face)"/>
+  <ellipse cx="73" cy="88" rx="13" ry="21" fill="#fffdf8"/>
+  <ellipse cx="126" cy="88" rx="13" ry="21" fill="#fffdf8"/>
+  <ellipse cx="77" cy="91" rx="5.5" ry="10" fill="#28263a"/>
+  <ellipse cx="122" cy="91" rx="5.5" ry="10" fill="#28263a"/>
+  <circle cx="78.5" cy="87" r="2.5" fill="#fff"/>
+  <circle cx="123.5" cy="87" r="2.5" fill="#fff"/>
+  <ellipse cx="99" cy="108" rx="20" ry="14" fill="#f4d3ba"/>
+  <ellipse cx="100" cy="104" rx="11" ry="7.5" fill="#302838"/>
+  <path d="M80 119 Q100 138 120 118" fill="none" stroke="#563d49" stroke-width="4" stroke-linecap="round"/>
+  <path d="M88 125 Q100 129 111 124" fill="none" stroke="#e78392" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="62" cy="114" rx="13" ry="6" fill="#e99299" opacity=".7"/>
+  <ellipse cx="138" cy="114" rx="13" ry="6" fill="#e99299" opacity=".7"/>
+  <circle cx="35" cy="182" r="13" fill="#fff6e8" stroke="#e7d4c3" stroke-width="2"/>
+  <circle cx="165" cy="182" r="13" fill="#fff6e8" stroke="#e7d4c3" stroke-width="2"/>
+</svg>

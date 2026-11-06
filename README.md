@@ -75,3 +75,9 @@ The repository is currently **public**. Never commit credentials, real private c
 Run `npm install` followed by `npm run dev` from the repository root on Windows. Electron starts the main dashboard and a separate **draggable, always-on-top Buddy avatar** near the bottom-right of your primary display. Drag **Move Buddy** to reposition it. Click Buddy to reopen the dashboard. Click × to hide Buddy; from the desktop app choose **My buddy → Show floating Buddy** to show it again.
 
 This runs in development mode. It does **not** install a Windows desktop shortcut. Screen monitoring, microphone access, voice activation and Ollama are not yet available.
+
+## Desktop mascot update
+
+HeyBuddy now shows an original cartoon mouse with large round ears. **Drag the character itself** to move its floating window; use **Open HeyBuddy** beneath the character to open the dashboard, or **×** to hide it. The dashboard uses the same mascot.
+
+The character is an original mouse design inspired by classic animation, **not an official Disney/Mickey Mouse asset**. Do not use an unlicensed character likeness or cloned actor voice in a public release.

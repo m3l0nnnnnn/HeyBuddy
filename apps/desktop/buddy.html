@@ -5,49 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HeyBuddy Floating Companion</title>
 <style>
-* {box-sizing:border-box}
-html,body {margin:0;width:170px;height:218px;overflow:hidden;background:transparent;font-family:system-ui,'Segoe UI',sans-serif}
-.top {height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 9px 0 16px}
-.drag {height:100%;display:flex;align-items:center;flex:1;font-size:11px;font-weight:800;color:#6855bb;text-shadow:0 1px 2px white;-webkit-app-region:drag;user-select:none;cursor:grab}
-.close {font-size:18px;line-height:24px;height:25px;width:25px;border:0;border-radius:50%;color:#6955bb;background:#eae4ff;cursor:pointer;-webkit-app-region:no-drag}
-.close:hover {background:white}
-.avatar {display:block;position:relative;width:170px;height:188px;background:transparent;border:0;padding:0;cursor:pointer}
-.antenna {position:absolute;left:81px;top:13px;width:8px;height:36px;transform:rotate(9deg);background:#c7b9ff;border-radius:10px}
-.antenna:before {content:"";position:absolute;top:-10px;left:-8px;width:24px;height:24px;background:#ffe4aa;border-radius:50%;box-shadow:0 0 0 4px #ffe2a65b}
-.body {position:absolute;left:22px;top:40px;width:126px;height:123px;background:linear-gradient(135deg,#e4ddff 0%,#c9b9ff 58%,#a391ec 100%);border-radius:47% 47% 43% 43%;box-shadow:inset -11px -12px 18px #6553ad31,inset 7px 8px 12px #ffffff99,0 11px 20px #54439e45;animation:bob 3.4s ease-in-out infinite}
-.body:before,.body:after {content:"";position:absolute;width:29px;height:36px;background:#c6b5fa;top:76px;border-radius:45%;z-index:-1}
-.body:before {left:-12px;transform:rotate(-26deg)}
-.body:after {right:-12px;transform:rotate(26deg)}
-.eye {position:absolute;top:51px;width:14px;height:20px;border-radius:50%;background:#393062}
-.eye:after {content:"";position:absolute;top:3px;left:3px;width:5px;height:6px;background:#fff;border-radius:50%}
-.eye.left {left:35px}
-.eye.right {right:35px}
-.cheek {position:absolute;top:76px;width:22px;height:11px;border-radius:50%;background:#f1a5c2bd}
-.cheek.left {left:16px}
-.cheek.right {right:16px}
-.mouth {position:absolute;top:80px;left:56px;width:14px;height:9px;border-radius:0 0 15px 15px;background:#57457d}
-.label {position:absolute;left:24px;bottom:3px;width:122px;padding:6px;background:white;color:#6e59c8;font-weight:800;font-size:12px;border-radius:30px;box-shadow:0 4px 13px #4b398a36}
-.close:focus-visible,.avatar:focus-visible {outline:2px solid #6b58c9;outline-offset:-2px}
-@keyframes bob {0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-@media(prefers-reduced-motion:reduce){.body{animation:none}}
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 194px; height: 244px; overflow: hidden; background: transparent; font-family: system-ui, "Segoe UI", sans-serif; }
+  .window { position: relative; height: 244px; width: 194px; }
+  .mascot-drag-area { -webkit-app-region: drag; position: absolute; top: 0; left: 0; width: 194px; height: 207px; display: flex; align-items: center; justify-content: center; cursor: grab; user-select: none; }
+  .mascot { pointer-events: none; width: 185px; height: 202px; object-fit: contain; user-select: none; -webkit-user-drag: none; animation: bob 3.5s ease-in-out infinite; filter: drop-shadow(0 9px 9px #362a593d); }
+  .controls { -webkit-app-region: no-drag; position: absolute; bottom: 2px; left: 9px; right: 9px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  button { -webkit-app-region: no-drag; font: 800 12px system-ui, "Segoe UI", sans-serif; border: 0; cursor: pointer; border-radius: 100px; height: 31px; box-shadow: 0 4px 12px #312a5d3a; }
+  .open { background: #fff; color: #5947a5; padding: 0 16px; flex: 1; }
+  .hide { width: 32px; background: #f5e9f3; color: #694d69; font-size: 18px; }
+  button:hover { filter: brightness(.96); }
+  button:focus-visible { outline: 2px solid #6752d4; outline-offset: 2px; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @media (prefers-reduced-motion: reduce) { .mascot { animation: none; } }
 </style>
 </head>
 <body>
-<div class="top">
-  <div class="drag" title="Drag to move Buddy">⠿ Move Buddy</div>
-  <button id="hide" class="close" title="Hide Buddy" aria-label="Hide Buddy">×</button>
+<div class="window">
+  <div class="mascot-drag-area" title="Hold and drag the mouse to move Buddy" aria-label="Drag Buddy around the desktop">
+    <img class="mascot" src="../web/public/buddy-mouse.svg" alt="Friendly HeyBuddy mouse mascot" draggable="false">
+  </div>
+  <div class="controls">
+    <button id="open" class="open" title="Open HeyBuddy dashboard">Open HeyBuddy</button>
+    <button id="hide" class="hide" aria-label="Hide Buddy" title="Hide Buddy">×</button>
+  </div>
 </div>
-<button id="open" class="avatar" title="Open HeyBuddy dashboard" aria-label="Open HeyBuddy dashboard">
-  <span class="antenna"></span>
-  <span class="body">
-    <span class="eye left"></span><span class="eye right"></span>
-    <span class="cheek left"></span><span class="cheek right"></span><span class="mouth"></span>
-  </span>
-  <span class="label">HeyBuddy ✦</span>
-</button>
 <script>
-document.getElementById('open').addEventListener('click',()=>window.heybuddy?.openDashboard());
-document.getElementById('hide').addEventListener('click',()=>window.heybuddy?.hideBuddy());
+  document.getElementById('open').addEventListener('click', () => window.heybuddy?.openDashboard());
+  document.getElementById('hide').addEventListener('click', () => window.heybuddy?.hideBuddy());
 </script>
 </body>
 </html>
