@@ -6,6 +6,7 @@ const PRELOAD = path.join(__dirname, 'preload.cjs');
 let dashboard = null;
 let companion = null;
 let approvedSource = null;
+let demoWindow = null;
 
 
 function showDashboard() {
@@ -89,6 +90,35 @@ function showCompanion() {
   companion.on('closed', () => { companion = null; });
 }
 
+function showDemoWindow() {
+  if (demoWindow && !demoWindow.isDestroyed()) {
+    demoWindow.show();
+    demoWindow.focus();
+    return;
+  }
+  demoWindow = new BrowserWindow({
+    width: 950,
+    height: 820,
+    minWidth: 700,
+    minHeight: 570,
+    backgroundColor: '#f5f3fb',
+    title: 'HeyBuddy Fictional Chat Lab',
+    autoHideMenuBar: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
+    },
+  });
+  if (app.isPackaged) {
+    demoWindow.loadFile(path.join(__dirname, '../web/dist/demo.html'));
+  } else {
+    demoWindow.loadURL(DEV_URL + '/demo.html');
+  }
+  demoWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  demoWindow.on('closed', () => { demoWindow = null; });
+}
+
 app.whenReady().then(() => {
   // Electron on Windows has no built-in getDisplayMedia system picker.
   // The dashboard shows all available sources and requires the user to select one.
@@ -123,6 +153,10 @@ app.whenReady().then(() => {
     } catch {
       callback(null);
     }
+  });
+  ipcMain.on('demo:open', (event) => {
+    if (!dashboard || event.sender !== dashboard.webContents) return;
+    showDemoWindow();
   });
   ipcMain.on('buddy:set-alert', (event, isWarning) => {
     if (!dashboard || event.sender !== dashboard.webContents) return;

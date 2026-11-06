@@ -12,6 +12,7 @@ function messageOf(error) {
 export default function LiveMonitor() {
   const [sources, setSources] = useState([]);
   const [source, setSource] = useState('');
+  const [sourceReady, setSourceReady] = useState(false);
   const [status, setStatus] = useState('idle');
   const [model, setModel] = useState(null);
   const [result, setResult] = useState(null);
@@ -32,12 +33,35 @@ export default function LiveMonitor() {
       if (isElectron) {
         const items = await window.heybuddy.listCaptureSources();
         setSources(items);
-        setSource((value) => items.some(item => item.id === value) ? value : '');
+        setSource('');
+        setSourceReady(false);
       }
       const response = await fetch(API + '/api/ollama');
       if (response.ok) setModel(await response.json());
     } catch {
       setModel({ connected: false, model_installed: false });
+    }
+  }
+
+  async function selectSource(id) {
+    setSource(id);
+    setSourceReady(false);
+    setError('');
+    if (!id || !isElectron) return;
+    try {
+      const approved = await window.heybuddy.chooseCaptureSource(id);
+      if (!approved) throw new Error('The selected window is no longer available. Refresh the list.');
+      setSourceReady(true);
+    } catch (e) {
+      setError(messageOf(e));
+    }
+  }
+
+  function openDemo() {
+    if (window.heybuddy?.openDemoChat) {
+      window.heybuddy.openDemoChat();
+    } else {
+      window.open('/demo.html', '_blank', 'noopener,noreferrer');
     }
   }
 
@@ -112,13 +136,9 @@ export default function LiveMonitor() {
     setResult(null);
     setCount(0);
     try {
-      if (isElectron) {
-        if (!source) {
-          setError('Choose a screen or conversation window first.');
-          return;
-        }
-        const ok = await window.heybuddy.chooseCaptureSource(source);
-        if (!ok) throw new Error('Window is no longer available. Refresh the source list.');
+      if (isElectron && (!source || !sourceReady)) {
+        setError('Choose a window or screen and wait for approval before starting.');
+        return;
       }
       // A real user click initiates all screen captures.
       // In browsers, the native picker asks which source to share.
@@ -157,11 +177,15 @@ export default function LiveMonitor() {
       <p className="monitor-explain">
         Select a conversation window, then start. HeyBuddy scans the visible image about every 15 seconds through local Ollama. Nothing is recorded or uploaded to a cloud service by this feature. Voice messages are not analysed yet.
       </p>
+      <div className="demo-entry">
+        <div><strong>Test HeyBuddy with a fictional conversation</strong><p>Open a separate chat window, select it below and let Ollama check the visible messages.</p></div>
+        <button type="button" onClick={openDemo}>Open demo chat</button>
+      </div>
       {isElectron && (
         <div className="monitor-select">
           <label htmlFor="monitor-source">Choose the window or screen to share</label>
           <div className="monitor-select-row">
-            <select id="monitor-source" value={source} onChange={e => setSource(e.target.value)} disabled={active}>
+            <select id="monitor-source" value={source} onChange={e => selectSource(e.target.value)} disabled={active}>
               <option value="">Select a source…</option>
               {sources.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
             </select>
@@ -170,7 +194,7 @@ export default function LiveMonitor() {
         </div>
       )}
       <div className="monitor-actions">
-        {!active ? <button className="monitor-start" onClick={start}><Eye size={18}/> Start screen protection</button> :
+        {!active ? <button className="monitor-start" onClick={start} disabled={isElectron && !sourceReady}><Eye size={18}/> Start screen protection</button> :
           <button className="monitor-stop" onClick={stop}><Square size={16}/> Stop sharing</button>}
         <span>{status === 'analysing' ? 'Buddy is checking…' : active ? 'Monitoring visible content only' : 'Screen access is off'}</span>
       </div>

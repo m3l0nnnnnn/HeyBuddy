@@ -110,3 +110,9 @@ npm run dev
 Open **Safety preview** in the HeyBuddy dashboard. Select a chat window or screen under **Screen Protection**, then click **Start screen protection**. Stop sharing when finished. The app samples the visible image approximately every 15 seconds (only while enabled), sends the frame to FastAPI on localhost and analyses it with your local Ollama vision model. It shows explanations and warning signs but does not claim certainty.
 
 This version **does not record or understand voice messages** and does not automatically access the microphone. Voice-message transcription requires an additional, consent-based local system-audio capture pipeline. No images are written to disk by HeyBuddy, and there is no cloud analysis in this feature. Do not screen-share private chats you lack permission to process. The repository remains public; never commit personal messages or recordings.
+
+## Demo chat environment
+
+A fictional test chat is available through the **Open demo chat** button in **Safety preview → Screen Protection**. It opens a separate Electron window. You can also open http://127.0.0.1:5173/demo.html in a regular browser while Vite is running.
+
+Scenarios: reward scam, grooming warning signs, cyberbullying and harmless school conversation. In the dashboard, refresh the screen source list, select **HeyBuddy Fictional Chat Lab**, then click **Start screen protection**. Wait for a complete local model assessment and switch scenarios to compare outputs. You must start screen capture explicitly. Nothing records in the background when sharing is off.

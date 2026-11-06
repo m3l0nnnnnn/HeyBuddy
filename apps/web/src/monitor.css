@@ -24,3 +24,10 @@
 .monitor-result p{margin:9px 0}
 .monitor-result ul{margin:9px 0;padding-left:20px}
 .monitor-result small{color:#817f85;font-size:10px}
+
+.demo-entry{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:17px 18px;border:1px solid #ded6f4;border-radius:13px;background:#f6f3ff;margin:17px 0}
+.demo-entry strong{font-size:12px;color:#51428c}
+.demo-entry p{font-size:11px;color:#817a9b;line-height:1.5;margin:5px 0 0}
+.demo-entry button{flex-shrink:0;border:0;border-radius:10px;background:#705cd0;padding:12px 16px;color:white;font-size:11px;font-weight:800;cursor:pointer}
+.monitor-start:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:620px){.demo-entry{flex-direction:column;align-items:stretch}.demo-entry button{width:100%}}

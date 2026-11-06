@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 // No arbitrary system, file, shell or microphone APIs are exposed.
 contextBridge.exposeInMainWorld('heybuddy', Object.freeze({
   openDashboard: () => ipcRenderer.send('buddy:open-dashboard'),
+  openDemoChat: () => ipcRenderer.send('demo:open'),
   showBuddy: () => ipcRenderer.send('buddy:show'),
   hideBuddy: () => ipcRenderer.send('buddy:hide'),
   listCaptureSources: () => ipcRenderer.invoke('capture:list'),
