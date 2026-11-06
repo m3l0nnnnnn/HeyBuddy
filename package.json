@@ -1,0 +1,20 @@
+{
+  "name": "heybuddy",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/desktop"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n web,desktop \"npm run dev:web\" \"npm run dev:desktop\"",
+    "dev:web": "npm run dev --workspace @heybuddy/web",
+    "dev:desktop": "wait-on http://127.0.0.1:5173 && npm run dev --workspace @heybuddy/desktop",
+    "build:web": "npm run build --workspace @heybuddy/web",
+    "start:api": "python -m uvicorn main:app --app-dir apps/api --host 127.0.0.1 --port 8000"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "wait-on": "^8.0.2"
+  }
+}
