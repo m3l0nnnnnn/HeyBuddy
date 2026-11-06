@@ -1,0 +1,26 @@
+.monitor-panel{padding:24px;background:white;border:1px solid #e9e5f3;border-radius:19px;margin-bottom:28px}
+.monitor-head{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.monitor-heading{display:flex;align-items:center;gap:12px}
+.monitor-symbol{height:43px;width:43px;background:#f0ebff;border-radius:13px;color:#6c58ce;display:grid;place-items:center}
+.monitor-heading h2{font:800 18px 'Outfit',sans-serif;margin:0 0 5px}
+.monitor-heading p{font-size:11px;color:#8f8ba5;margin:0;line-height:1.6}
+.monitor-state{background:#f3f1f7;border-radius:100px;padding:6px 12px;font-size:10px;font-weight:800;color:#8c8998;white-space:nowrap}
+.monitor-state--on{color:#217956;background:#dff9ec}
+.monitor-explain{font-size:12px;color:#736f88;line-height:1.75;margin:20px 0}
+.monitor-select label{display:block;font-size:11px;font-weight:800;margin-bottom:9px}
+.monitor-select-row{display:flex;gap:8px}
+.monitor-select select{border:1px solid #dfdbee;border-radius:10px;padding:11px 12px;flex:1;min-width:0;background:#fff;color:#3c3750;font:500 12px 'DM Sans',sans-serif}
+.monitor-select-row>button{border:1px solid #e4deef;border-radius:10px;color:#6553bd;background:#fff;width:42px;display:grid;place-items:center}
+.monitor-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:17px}
+.monitor-actions>span{font-size:11px;color:#8a859c}
+.monitor-start,.monitor-stop{border:0;border-radius:11px;padding:13px 16px;display:flex;align-items:center;gap:9px;font-size:12px;font-weight:800;color:white;background:#7461d9}
+.monitor-stop{background:#a33b57}
+.monitor-model{display:flex;align-items:center;gap:7px;font-size:11px;margin-top:17px;color:#76728e}
+.monitor-error{background:#fff0ef;color:#a2354c;border:1px solid #ffd0cf;border-radius:10px;padding:12px 14px;font-size:12px;margin-top:15px}
+.monitor-result{margin-top:19px;border-radius:14px;background:#f2f8f5;padding:18px;color:#394e44;font-size:12px;line-height:1.7}
+.monitor-result--warning{background:#fff8eb;color:#73552e}
+.monitor-result-title{display:flex;align-items:center;gap:8px;font-size:14px}
+.monitor-result-title svg{flex-shrink:0}
+.monitor-result p{margin:9px 0}
+.monitor-result ul{margin:9px 0;padding-left:20px}
+.monitor-result small{color:#817f85;font-size:10px}

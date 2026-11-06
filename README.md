@@ -81,3 +81,32 @@ This runs in development mode. It does **not** install a Windows desktop shortcu
 HeyBuddy now shows an original cartoon mouse with large round ears. **Drag the character itself** to move its floating window; use **Open HeyBuddy** beneath the character to open the dashboard, or **×** to hide it. The dashboard uses the same mascot.
 
 The character is an original mouse design inspired by classic animation, **not an official Disney/Mickey Mouse asset**. Do not use an unlicensed character likeness or cloned actor voice in a public release.
+
+
+## Step 3 — Live, opt-in conversation scanning (local)
+
+HeyBuddy can now **read visible conversation text without uploading screenshots manually**.
+
+Install [Ollama](https://ollama.com/download) on your own Windows PC and run:
+
+```powershell
+ollama pull gemma3:4b
+```
+
+In one PowerShell terminal in the project root run:
+
+```powershell
+python -m pip install -r apps/api/requirements.txt
+npm run start:api
+```
+
+In another PowerShell terminal run:
+
+```powershell
+npm install
+npm run dev
+```
+
+Open **Safety preview** in the HeyBuddy dashboard. Select a chat window or screen under **Screen Protection**, then click **Start screen protection**. Stop sharing when finished. The app samples the visible image approximately every 15 seconds (only while enabled), sends the frame to FastAPI on localhost and analyses it with your local Ollama vision model. It shows explanations and warning signs but does not claim certainty.
+
+This version **does not record or understand voice messages** and does not automatically access the microphone. Voice-message transcription requires an additional, consent-based local system-audio capture pipeline. No images are written to disk by HeyBuddy, and there is no cloud analysis in this feature. Do not screen-share private chats you lack permission to process. The repository remains public; never commit personal messages or recordings.

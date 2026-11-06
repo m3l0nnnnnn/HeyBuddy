@@ -1,3 +1,4 @@
+import LiveMonitor from './LiveMonitor.jsx';
 import { useEffect, useState } from 'react';
 import {
   Activity, ArrowRight, CheckCircle2, CircleHelp, Heart, Home, LockKeyhole,
@@ -45,7 +46,7 @@ const scenarios = {
 };
 
 const features = [
-  { icon: MonitorOff, title: 'Screen monitoring', detail: 'Not active in this prototype', tone: 'muted' },
+  { icon: MonitorOff, title: 'Screen monitoring', detail: 'User-controlled, opt-in screen sharing', tone: 'muted' },
   { icon: MicOff, title: 'Voice activation', detail: 'Not active in this prototype', tone: 'muted' },
   { icon: LockKeyhole, title: 'Private by design', detail: 'No input is uploaded by this interface', tone: 'mint' },
 ];
@@ -153,8 +154,10 @@ function App() {
 
         {page === 'check' && (
           <section className="page-panel">
-            <div className="page-heading"><p className="eyebrow"><ShieldAlert size={15} /> EXPLORE THE FUTURE</p><h1>Safety check preview</h1><p>Choose a fictional example to see the kinds of red flags HeyBuddy will explain.</p></div>
-            {noticeOpen && <div className="notice"><CircleHelp size={20} /><span><strong>This is a scripted demo, not AI detection.</strong> Real Ollama analysis will be added in the next development step.</span><button onClick={() => setNoticeOpen(false)} aria-label="Dismiss notice"><X size={18}/></button></div>}
+            <div className="page-heading"><p className="eyebrow"><ShieldAlert size={15} /> EXPLORE THE FUTURE</p><h1>Online safety checks</h1><p>Start local screen protection to let Buddy examine visible conversations, or browse the examples below.</p></div>
+            {noticeOpen && <div className="notice"><CircleHelp size={20} /><span><strong>The examples below are scripted, not AI detection.</strong> Live screen analysis is now available separately above when Ollama is running.</span><button onClick={() => setNoticeOpen(false)} aria-label="Dismiss notice"><X size={18}/></button></div>}
+            <LiveMonitor />
+            <div className="section-heading"><div><h3>Example scenarios</h3><p>These are still educational examples, not live results.</p></div></div>
             <div className="scenario-tabs" role="group" aria-label="Choose sample scenario">
               {Object.entries(scenarios).map(([id, item]) => <button key={id} className={id === selected ? 'scenario-tab scenario-tab--active' : 'scenario-tab'} onClick={() => selectScenario(id)}>{item.label}</button>)}
             </div>
@@ -176,17 +179,17 @@ function App() {
 
         {page === 'privacy' && (
           <section className="page-panel">
-            <div className="page-heading"><p className="eyebrow"><LockKeyhole size={15} /> YOU STAY IN CONTROL</p><h1>Privacy & local status</h1><p>This first build does not collect conversations or record your screen or microphone.</p></div>
+            <div className="page-heading"><p className="eyebrow"><LockKeyhole size={15} /> YOU STAY IN CONTROL</p><h1>Privacy & local status</h1><p>Screen sharing is user-initiated and stays in local memory. Your microphone is not accessed.</p></div>
             <div className="status-panel"><div className="status-panel__header"><h3>System status</h3><span className="tiny-pill">LOCAL DEVICE</span></div>
               <div className="status-row"><span className="status-row__icon"><Activity size={19}/></span><div><strong>React interface</strong><p>Running in your browser or desktop shell</p></div><span className="status-label status-label--ok">Active</span></div>
               <div className="status-row"><span className="status-row__icon"><span>{apiStatus === 'online' ? <Wifi size={19}/> : <WifiOff size={19}/>}</span></span><div><strong>Local FastAPI service</strong><p>127.0.0.1:8000 · only accessible on your computer by default</p></div><span className={'status-label status-label--' + (apiStatus === 'online' ? 'ok' : 'off')}>{apiStatus === 'online' ? 'Connected' : apiStatus === 'checking' ? 'Checking' : 'Not running'}</span></div>
-              <div className="status-row"><span className="status-row__icon"><Shield size={19}/></span><div><strong>Ollama AI</strong><p>Integration planned for Step 3</p></div><span className="status-label status-label--off">Not configured</span></div>
+              <div className="status-row"><span className="status-row__icon"><Shield size={19}/></span><div><strong>Ollama AI</strong><p>Used for local, user-approved screen analysis</p></div><span className="status-label status-label--off">Not configured</span></div>
             </div>
             <div className="permissions-grid">{features.map(({ icon: Icon, title, detail, tone }) => <div className="permission" key={title}><span className={'feature-icon feature-icon--' + tone}><Icon size={20} /></span><strong>{title}</strong><p>{detail}</p></div>)}</div>
           </section>
         )}
 
-        <footer className="footer"><span><ShieldCheck size={16} /> HeyBuddy · Privacy-first prototype</span><span>Made to help people recognise online harm, not make accusations.</span></footer>
+        <footer className="footer"><span><ShieldCheck size={16} /> HeyBuddy · Local-first prototype</span><span>Made to help people recognise online harm, not make accusations.</span></footer>
       </main>
     </div>
   );

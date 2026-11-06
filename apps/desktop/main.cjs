@@ -1,10 +1,12 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, session, desktopCapturer } = require('electron');
 const path = require('node:path');
 
 const DEV_URL = 'http://127.0.0.1:5173';
 const PRELOAD = path.join(__dirname, 'preload.cjs');
 let dashboard = null;
 let companion = null;
+let approvedSource = null;
+
 
 function showDashboard() {
   if (dashboard && !dashboard.isDestroyed()) {
@@ -87,6 +89,40 @@ function showCompanion() {
 }
 
 app.whenReady().then(() => {
+  // Electron on Windows has no built-in getDisplayMedia system picker.
+  // The dashboard shows all available sources and requires the user to select one.
+  ipcMain.handle('capture:list', async (event) => {
+    if (!dashboard || event.sender !== dashboard.webContents) return [];
+    const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
+    return sources.map(({ id, name }) => ({ id, name }));
+  });
+  ipcMain.handle('capture:choose', async (event, sourceId) => {
+    if (!dashboard || event.sender !== dashboard.webContents || typeof sourceId !== 'string') {
+      return false;
+    }
+    const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
+    if (!sources.some(source => source.id === sourceId)) return false;
+    approvedSource = sourceId;
+    return true;
+  });
+  session.defaultSession.setDisplayMediaRequestHandler(async (request, callback) => {
+    if (!dashboard || dashboard.isDestroyed() || !approvedSource ||
+        request.securityOrigin !== 'http://127.0.0.1:5173' ||
+        !request.userGesture || !request.videoRequested) {
+      callback(null);
+      return;
+    }
+    // Consume approval exactly once; each new session requires choosing again.
+    const id = approvedSource;
+    approvedSource = null;
+    try {
+      const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
+      const selected = sources.find(item => item.id === id);
+      callback(selected ? { video: selected } : null);
+    } catch {
+      callback(null);
+    }
+  });
   ipcMain.on('buddy:open-dashboard', showDashboard);
   ipcMain.on('buddy:show', showCompanion);
   ipcMain.on('buddy:hide', () => {
