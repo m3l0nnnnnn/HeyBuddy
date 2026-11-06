@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HeyBuddy Fictional Chat Lab</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f3fb;font-family:system-ui,"Segoe UI",sans-serif;color:#28243b}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;background:white;border-bottom:1px solid #e9e5f4;padding:18px 28px}
+.brand{font-size:21px;font-weight:850;color:#6a52c7}
+.badge{font-size:11px;font-weight:800;background:#fff1ce;color:#7e6128;border-radius:100px;padding:9px 13px}
+main{max-width:850px;margin:25px auto;padding:0 18px 30px}
+h1{font-size:26px;margin:0 0 8px}p{color:#777187;font-size:13px;line-height:1.65}
+.tabs{display:flex;flex-wrap:wrap;gap:9px;margin:19px 0}
+.tabs button{border:1px solid #dcd5ee;background:white;color:#665986;border-radius:11px;padding:12px 16px;cursor:pointer;font-size:13px;font-weight:750}
+.tabs button.active{background:#705bce;color:white;border-color:#705bce}
+.chat{background:white;border:1px solid #e6e0f0;border-radius:17px;overflow:hidden;box-shadow:0 12px 30px #57478d13}
+.chat-title{background:#faf8ff;padding:19px 25px;border-bottom:1px solid #ede9f5;display:flex;align-items:center;gap:10px}
+.avatar{width:39px;height:39px;border-radius:50%;background:#dcd4f7;display:grid;place-items:center;color:#5345a0;font-size:20px;font-weight:900}
+.chat-title strong{font-size:14px}.chat-title small{display:block;font-size:11px;color:#8e89a2;margin-top:4px}
+.messages{display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-height:360px;padding:27px;background:linear-gradient(110deg,#fff,#fcfbff)}
+.bubble{max-width:75%;padding:16px 19px;border-radius:4px 16px 16px 16px;background:#eeeaf8;color:#343047;font-size:17px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.bubble.own{align-self:flex-end;background:#e1f1eb;border-radius:16px 16px 4px 16px}
+.sender{display:block;font-size:11px;color:#74688b;font-weight:850;margin-bottom:6px}
+.readonly{border-top:1px solid #eee9f6;padding:16px 24px;color:#aaa3ba;font-size:12px}
+.note{margin-top:18px;background:#eee9ff;border:1px solid #dcd2fb;border-radius:12px;padding:15px 19px;font-size:12px;line-height:1.7;color:#5a4d88}
+.note strong{display:block;font-size:13px;margin-bottom:5px}
+@media(max-width:550px){.bubble{max-width:95%;font-size:15px}.messages{padding:17px}}
+</style>
+</head>
+<body>
+<header><div class="brand">HeyBuddy · Chat Lab</div><span class="badge">FICTIONAL TEST DATA</span></header>
+<main>
+<h1>Test HeyBuddy on a conversation</h1>
+<p>These are simulated messages only. Open this window separately from HeyBuddy, then share this window with Screen Protection. Switch scenarios to see if your locally running AI notices different warning signs.</p>
+<div class="tabs" role="group" aria-label="Scenario chooser">
+<button type="button" data-scene="scam" class="active">Possible scam</button>
+<button type="button" data-scene="grooming">Possible grooming</button>
+<button type="button" data-scene="bullying">Cyberbullying</button>
+<button type="button" data-scene="normal">Ordinary chat</button>
+</div>
+<section class="chat" aria-label="Simulated chat">
+  <div class="chat-title"><div class="avatar">?</div><div><strong id="sender-name">Test conversation</strong><small>Offline fictional conversation · no real user account</small></div></div>
+  <div class="messages" id="messages" aria-live="polite"></div>
+  <div class="readonly">Read-only chat preview · no messages can be sent</div>
+</section>
+<div class="note"><strong>How to test</strong>In HeyBuddy → Safety preview → Screen Protection, choose this chat window from the window list and click Start screen protection. Keep this window visible until analysis finishes. Ollama responses may vary; a warning is not proof of wrongdoing.</div>
+</main>
+<script>
+const scenes={
+  scam:{name:"Unknown gaming rewards account",items:[
+    ["Unknown sender","Congratulations! You won 5,000 free game credits. You have 10 minutes to claim them!"],
+    ["You","I didn't enter a competition. Is this real?",true],
+    ["Unknown sender","Yes! You must open our verification page and enter your game account password right now or your prize disappears."],
+    ["Unknown sender","Don't tell anyone else about this deal."]] },
+  grooming:{name:"Online gaming acquaintance",items:[
+    ["Online friend","You're so mature for your age. You're different from other kids."],
+    ["You","Thanks. I guess that's nice?",true],
+    ["Online friend","Can you give me your home address? I've got a secret surprise for you."],
+    ["Online friend","Promise me you won't tell your parents or friends about our chats. It's our secret."]] },
+  bullying:{name:"Class group chat",items:[
+    ["Classmate","Everyone in our group thinks you're pathetic. We created a separate chat just to laugh at you."],
+    ["You","Please stop. This is upsetting.",true],
+    ["Classmate","We're posting that embarrassing picture of you for the whole school to see."],
+    ["Classmate","No one likes you. Don't bother telling a teacher."]] },
+  normal:{name:"Study group",items:[
+    ["Study buddy","Hi! Are we meeting at the library tomorrow to finish our school project?"],
+    ["You","Yes! 3 pm works for me.",true],
+    ["Study buddy","Great, I'll bring the notes and you can bring the slides."],
+    ["You","Sounds good, see you there!",true]] }
+};
+function choose(key){
+ const data=scenes[key];
+ if(!data)return;
+ document.getElementById('sender-name').textContent=data.name;
+ const container=document.getElementById('messages');
+ container.replaceChildren();
+ data.items.forEach(([who,text,own])=>{
+   const bubble=document.createElement('div');
+   bubble.className=own?'bubble own':'bubble';
+   const name=document.createElement('span');
+   name.className='sender';
+   name.textContent=who;
+   bubble.append(name,document.createTextNode(text));
+   container.append(bubble);
+ });
+ document.querySelectorAll('[data-scene]').forEach(button=>{
+   const active=button.dataset.scene===key;
+   button.classList.toggle('active',active);
+   button.setAttribute('aria-pressed',String(active));
+ });
+}
+document.querySelectorAll('[data-scene]').forEach(button=>button.addEventListener('click',()=>choose(button.dataset.scene)));
+choose('scam');
+</script>
+</body>
+</html>
