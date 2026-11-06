@@ -139,7 +139,25 @@ async def analyze_screen(request: FrameRequest):
         raise HTTPException(status_code=503, detail="Ollama is offline. Start Ollama locally.") from None
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Local model timed out. Try again or use a smaller model.") from None
-    except httpx.HTTPStatusError:
-        raise HTTPException(status_code=502, detail="The local model returned an error.") from None
+    except httpx.HTTPStatusError as exc:
+        # Show a short local Ollama error rather than hiding all failures.
+        # This helps distinguish OOM, invalid request, and model-load errors.
+        status = exc.response.status_code
+        try:
+            payload = exc.response.json()
+            reason = payload.get("error", "") if isinstance(payload, dict) else ""
+        except ValueError:
+            reason = ""
+        reason = str(reason).replace(chr(10), " ").replace(chr(13), " ").strip()[:280]
+        if not reason:
+            reason = "Check the Ollama logs for further details."
+        if "memory" in reason.lower() or "allocate" in reason.lower():
+            detail = (
+                f"Ollama HTTP {status}: {reason} "
+                "Try closing other memory-heavy applications or using a smaller vision model."
+            )
+        else:
+            detail = f"Ollama HTTP {status}: {reason}"
+        raise HTTPException(status_code=502, detail=detail) from None
     except (ValueError, KeyError, TypeError, ValidationError):
         raise HTTPException(status_code=502, detail="The local model returned an invalid assessment.") from None

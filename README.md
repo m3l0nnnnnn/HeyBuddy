@@ -144,3 +144,18 @@ Start screen protection, and only the trusted dashboard origin is allowed.
 If starting fails again, look for [HeyBuddy] Screen permission or
 [HeyBuddy] Capture request declined in the terminal running npm run dev.
 Restart Electron after pulling the fix so the new main-process handlers load.
+
+## Diagnose Ollama model errors
+
+If HeyBuddy reports Ollama HTTP 500, read the rest of the displayed
+error message; memory exhaustion and model-load errors will now be visible.
+If it reports Ollama HTTP 400, the request may be invalid for the
+installed Ollama version or model. Do not blindly change configuration.
+
+Test Ollama without screen sharing in PowerShell:
+
+    ollama list
+    ollama run gemma3:4b "Say hello in one sentence"
+
+The terminal running npm run start:api may also show an HTTP status.
+Do not share personal conversation content when requesting debugging help.
