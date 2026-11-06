@@ -48,6 +48,7 @@ export default function LiveMonitor() {
   }, []);
 
   function stop() {
+    window.heybuddy?.setRiskAlert?.(false);
     stoppingRef.current = true;
     liveRef.current = false;
     if (timerRef.current) clearInterval(timerRef.current);
@@ -93,6 +94,7 @@ export default function LiveMonitor() {
       if (!response.ok) throw new Error(payload?.detail || 'Local AI analysis failed.');
       if (liveRef.current) {
         setResult(payload);
+        window.heybuddy?.setRiskAlert?.(payload.has_concern === true);
         setCount(value => value + 1);
         setError('');
       }

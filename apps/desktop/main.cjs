@@ -28,6 +28,7 @@ function showDashboard() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      backgroundThrottling: false,
     },
   });
 
@@ -122,6 +123,11 @@ app.whenReady().then(() => {
     } catch {
       callback(null);
     }
+  });
+  ipcMain.on('buddy:set-alert', (event, isWarning) => {
+    if (!dashboard || event.sender !== dashboard.webContents) return;
+    if (!companion || companion.isDestroyed()) return;
+    companion.webContents.send('buddy:alert', isWarning === true);
   });
   ipcMain.on('buddy:open-dashboard', showDashboard);
   ipcMain.on('buddy:show', showCompanion);
