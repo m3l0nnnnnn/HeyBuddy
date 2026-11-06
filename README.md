@@ -131,3 +131,16 @@ explicitly selected screen/window is eligible; audio capture remains disabled.
 
 This change updates code, but successful Windows screen-capture operation still
 requires a real local test.
+
+
+## Electron 35 screen permission compatibility fix
+
+The screen permission handler now supports both Electron 35's media requests
+with an empty mediaTypes array and the newer display-capture permission.
+It does not grant explicit camera or microphone permission. Capture still
+requires the user to select a source in the HeyBuddy desktop app and click
+Start screen protection, and only the trusted dashboard origin is allowed.
+
+If starting fails again, look for [HeyBuddy] Screen permission or
+[HeyBuddy] Capture request declined in the terminal running npm run dev.
+Restart Electron after pulling the fix so the new main-process handlers load.

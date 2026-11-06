@@ -142,13 +142,41 @@ app.whenReady().then(() => {
   // calling the stream handler. Never grant camera or microphone access.
   const canCapture = (wc) => Boolean(
     dashboard && !dashboard.isDestroyed() &&
-    wc === dashboard.webContents && approvedSource
+    wc === dashboard.webContents && approvedSource &&
+    dashboard.webContents.getURL().startsWith(DEV_URL)
   );
-  session.defaultSession.setPermissionCheckHandler((wc, permission) => {
-    return permission === 'display-capture' && canCapture(wc);
+
+  // Electron 35 reports getDisplayMedia permission as "media", with no
+  // mediaTypes in permission requests. Electron 45+ uses "display-capture".
+  // Distinguish older display capture from real camera/mic requests.
+  const isLegacyDisplayRequest = (permission, details) => (
+    permission === 'media' &&
+    Array.isArray(details?.mediaTypes) &&
+    details.mediaTypes.length === 0
+  );
+  const isDisplayPermission = (permission, details) => (
+    permission === 'display-capture' ||
+    isLegacyDisplayRequest(permission, details)
+  );
+  const matchesOrigin = (url) => {
+    try { return new URL(url).origin === new URL(DEV_URL).origin; }
+    catch { return false; }
+  };
+
+  session.defaultSession.setPermissionCheckHandler((wc, permission, origin, details) => {
+    if (!canCapture(wc) || !matchesOrigin(origin)) return false;
+    if (permission === 'display-capture') return true;
+    // Legacy display-capture checks have an "unknown" mediaType or omit it.
+    // Reject explicit camera ("video") and microphone ("audio") checks.
+    return permission === 'media' &&
+      (details?.mediaType === 'unknown' || details?.mediaType == null);
   });
-  session.defaultSession.setPermissionRequestHandler((wc, permission, callback) => {
-    callback(permission === 'display-capture' && canCapture(wc));
+  session.defaultSession.setPermissionRequestHandler((wc, permission, callback, details) => {
+    const origin = details?.requestingUrl || wc?.getURL();
+    const granted = canCapture(wc) && matchesOrigin(origin) &&
+      isDisplayPermission(permission, details);
+    console.info('[HeyBuddy] Screen permission', permission, granted ? 'granted' : 'denied');
+    callback(Boolean(granted));
   });
 
   session.defaultSession.setDisplayMediaRequestHandler(async (request, callback) => {
